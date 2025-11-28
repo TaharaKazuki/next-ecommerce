@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --fix && prettier --write ."
+    "lint": "eslint . --fix && prettier --write . && prisma format"
   },
   "dependencies": {
     "next": "16.0.5",
@@ -33,6 +33,7 @@
     "eslint-plugin-unused-imports": "^4.3.0",
     "prettier": "^3.7.1",
     "prettier-plugin-tailwindcss": "^0.7.1",
+    "prisma": "^6.5.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8.48.0"

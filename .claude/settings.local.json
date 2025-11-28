@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(npm run lint)",
       "Bash(npm uninstall:*)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(npx prisma:*)"
     ],
     "deny": [],
     "ask": []
