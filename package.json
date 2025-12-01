@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --fix && prettier --write . && prisma format"
+    "lint": "eslint . --fix && prettier --write . && prisma format",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "next": "16.0.5",
     "react": "19.2.0",
     "react-dom": "19.2.0"
@@ -35,6 +37,7 @@
     "prettier-plugin-tailwindcss": "^0.7.1",
     "prisma": "^6.5.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "typescript-eslint": "^8.48.0"
   }
