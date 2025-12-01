@@ -11,6 +11,7 @@ export function ProductCard({ product }: { product: Product }) {
           alt={product.name}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <h2 className="text-lg font-semibold">{product.name}</h2>
