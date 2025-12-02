@@ -35,7 +35,7 @@ async function main() {
         "Premium noise-cancelling wireless headphones with long battery life.",
       price: 199.99,
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
-      categoryId: electronics.slug,
+      categoryId: electronics.id,
       slug: "wireless-headphones",
     },
     {
