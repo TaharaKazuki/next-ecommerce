@@ -27,6 +27,7 @@ npm run lint     # Lint and format code (ESLint + Prettier)
 ## Code Style
 
 Import order is enforced by ESLint (eslint-plugin-import):
+
 1. Built-in modules
 2. External packages (React first)
 3. Internal (`@/*` paths)
