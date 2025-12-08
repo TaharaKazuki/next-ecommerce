@@ -8,6 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { getProductBySlug } from "@/lib/actions";
 import { prisma } from "@/lib/prisma";
 
 import { ProductCard } from "./ProductCard";
@@ -41,6 +42,9 @@ async function Products({ page }: { page: number }) {
 export default async function HomePage(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
+
+  const products = await getProductBySlug("smart-watch");
+  console.log(products);
 
   const total = await prisma.product.count();
   const totalPages = Math.ceil(total / pageSize);
