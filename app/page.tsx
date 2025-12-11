@@ -9,6 +9,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { prisma } from "@/lib/prisma";
+import { sleep } from "@/lib/utils";
 
 import { ProductCard } from "./ProductCard";
 import { ProductsSkeleton } from "./ProductsSkeleton";
@@ -24,7 +25,7 @@ async function Products({ page }: { page: number }) {
     take: pageSize,
   });
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await sleep(1000);
 
   return (
     <>
