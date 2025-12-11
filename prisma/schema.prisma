@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Product {
@@ -20,7 +19,7 @@ model Product {
   price       Float
   image       String
   slug        String    @unique
-  Category    Category? @relation(fields: [categoryId], references: [id])
+  category    Category? @relation(fields: [categoryId], references: [id])
   categoryId  String?
 }
 
