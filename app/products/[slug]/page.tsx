@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     <main className="container mx-auto p-4">
       <Card className="mx-auto max-w-3xl">
         <CardContent className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
-          <div className="relative overflow-hidden rounded-lg">
+          <div className="relative h-[200px] overflow-hidden rounded-lg md:h-[400px]">
             {product.image && (
               <Image
                 src={product.image}
@@ -73,6 +73,27 @@ export default async function ProductPage({ params }: { params: Params }) {
             <div className="space-y-2">
               <h2 className="font-medium">Description</h2>
               <p>{product.description}</p>
+            </div>
+            <Separator className="my-4" />
+            <div className="space-y-2">
+              <h2 className="font-medium">Availability</h2>
+              <div className="flex items-center gap-2">
+                {product.inventory > 0 ? (
+                  <Badge variant="outline" className="text-green-600">
+                    In stock
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-red-600">
+                    Out of stock
+                  </Badge>
+                )}
+
+                {product.inventory > 0 && (
+                  <span className="text-xs text-gray-500">
+                    {product.inventory}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>
