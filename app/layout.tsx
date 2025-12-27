@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 
+import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import type { Metadata } from "next";
@@ -39,14 +39,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <>
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/products">Products</Link>
-              </li>
-            </ul>
+            <Navbar />
             {children}
           </>
         </ThemeProvider>
