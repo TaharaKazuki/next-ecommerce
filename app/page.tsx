@@ -25,7 +25,6 @@ async function Products({ page }: { page: number }) {
 
   return (
     <>
-      <p>Showing {products.length} products</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
