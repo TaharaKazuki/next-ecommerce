@@ -8,7 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { prisma } from "@/lib/prisma";
+import { getProducts } from "@/lib/actions";
 import { sleep } from "@/lib/utils";
 
 import { ProductCard } from "./ProductCard";
@@ -19,11 +19,7 @@ type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const pageSize = 3;
 
 async function Products({ page }: { page: number }) {
-  const skip = (page - 1) * pageSize;
-  const products = await prisma.product.findMany({
-    skip,
-    take: pageSize,
-  });
+  const { products } = await getProducts(page, pageSize);
 
   await sleep(1000);
 
@@ -43,7 +39,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
 
-  const total = await prisma.product.count();
+  const { total } = await getProducts(page, pageSize);
   const totalPages = Math.ceil(total / pageSize);
 
   return (
