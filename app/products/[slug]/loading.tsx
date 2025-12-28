@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function Loading() {
   return (
-    <main className="container mx-auto p-4">
+    <main className="container mx-auto py-4">
       <BreadcrumbsSkeleton />
       <Card className="mx-auto max-w-3xl">
         <CardContent className="space-y-4 p-6">
