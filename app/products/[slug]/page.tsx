@@ -2,12 +2,13 @@ import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProductBySlug } from "@/lib/actions";
-import { formatPrice, sleep } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 type Params = Promise<{ slug: string }>;
 
@@ -41,10 +42,21 @@ export default async function ProductPage({ params }: { params: Params }) {
     notFound();
   }
 
-  await sleep(1000);
+  const breadcrumbs = [
+    { label: "Products", href: "/" },
+    {
+      label: product.category?.name,
+      href: `/category/${product.category?.slug}`,
+    },
+    { label: product.name, href: `/product/${product.slug}`, active: true },
+  ];
+
+  // await sleep(1000);
 
   return (
     <main className="container mx-auto p-4">
+      <Breadcrumbs items={breadcrumbs} />
+
       <Card className="mx-auto max-w-3xl">
         <CardContent className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
           <div className="relative h-[200px] overflow-hidden rounded-lg md:h-[400px]">

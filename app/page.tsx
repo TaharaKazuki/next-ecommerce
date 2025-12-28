@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import {
   Pagination,
   PaginationContent,
@@ -9,7 +10,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { getProducts } from "@/lib/actions";
-import { sleep } from "@/lib/utils";
 
 import { ProductCard } from "./ProductCard";
 import { ProductsSkeleton } from "./ProductsSkeleton";
@@ -21,7 +21,7 @@ const pageSize = 3;
 async function Products({ page }: { page: number }) {
   const { products } = await getProducts(page, pageSize);
 
-  await sleep(1000);
+  // await sleep(1000);
 
   return (
     <>
@@ -43,7 +43,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="mb-6 text-3xl font-bold">Home</h1>
+      <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
 
       <Suspense key={page} fallback={<ProductsSkeleton />}>
         <Products page={page} />
