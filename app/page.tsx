@@ -10,6 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { getProducts } from "@/lib/actions";
+import { sleep } from "@/lib/utils";
 
 import { ProductCard } from "./ProductCard";
 import { ProductsSkeleton } from "./ProductsSkeleton";
@@ -21,7 +22,7 @@ const pageSize = 3;
 async function Products({ page }: { page: number }) {
   const { products } = await getProducts(page, pageSize);
 
-  // await sleep(1000);
+  await sleep(1000);
 
   return (
     <>
