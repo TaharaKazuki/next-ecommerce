@@ -1,16 +1,60 @@
+import { Suspense } from "react";
+
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { searchProducts } from "@/lib/actions";
+import { sleep } from "@/lib/utils";
+
+import { ProductCard } from "../ProductCard";
+import { ProductsSkeleton } from "../ProductsSkeleton";
+
 type SearchPageProps = {
   searchParams: Promise<{ query?: string }>;
 };
 
+async function Products({ query }: { query: string }) {
+  const products = await searchProducts(query);
+
+  await sleep(1000);
+
+  if (products.length === 0) {
+    return (
+      <div className="text-muted-foreground text-center">
+        No products found.
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </>
+  );
+}
+
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
 
+  const query = params.query?.trim() ?? "";
+
+  const breadcrumbs = [
+    { label: "Products", href: "/" },
+    {
+      label: `Results for "${query}"`,
+      href: `/search?query=${encodeURIComponent(query)}`,
+    },
+  ];
+
   return (
-    <div className="container mx-auto py-4">
-      <h1 className="text-2xl font-bold">Search</h1>
-      <p className="text-muted-foreground">
-        The query is {params.query ?? "not provided"}.
-      </p>
-    </div>
+    <main className="container mx-auto py-4">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <Suspense key={query} fallback={<ProductsSkeleton />}>
+        <Products query={query} />
+      </Suspense>
+    </main>
   );
 }
