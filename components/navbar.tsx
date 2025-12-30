@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
@@ -5,6 +7,7 @@ import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
 import { SearchInput } from "./search-input";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 export const categories = [
   { id: 1, name: "Electronics", href: "/category/electronics" },
@@ -37,7 +40,18 @@ export function Navbar() {
         </div>
 
         <div className="mx-4 hidden w-full md:mx-8 md:block">
-          <SearchInput />
+          <Suspense
+            fallback={
+              <Input
+                type="search"
+                placeholder="Search"
+                className="pl-8"
+                disabled
+              />
+            }
+          >
+            <SearchInput />
+          </Suspense>
         </div>
 
         <div className="flex items-center gap-0">
