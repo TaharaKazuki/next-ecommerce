@@ -1,24 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import { prisma } from "@/lib/prisma";
-import { sleep } from "@/lib/utils";
+type Category = {
+  name: string;
+  slug: string;
+};
 
-export async function CategorySidebar({
-  activeCategory,
-}: {
-  activeCategory?: string;
-}) {
-  const categories = await prisma.category.findMany({
-    select: {
-      name: true,
-      slug: true,
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
+type Props = {
+  categories: Category[];
+};
 
-  await sleep(2000);
+export function CategorySidebar({ categories }: Props) {
+  const params = useParams();
+  const activeCategory = params.slug as string;
 
   return (
     <div className="w-[125px] flex-none">
