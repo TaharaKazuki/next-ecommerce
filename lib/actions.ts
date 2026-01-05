@@ -1,8 +1,59 @@
 "use cache";
 
+import { Prisma } from "@prisma/client";
 import { cacheLife } from "next/cache";
 
 import { prisma } from "./prisma";
+
+interface GetProductsParams {
+  query?: string;
+  slug?: string;
+  sort?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getProducts({
+  query,
+  slug,
+  sort,
+  page = 1,
+  pageSize = 3,
+}: GetProductsParams) {
+  cacheLife("minutes");
+  const where: Prisma.ProductWhereInput = {};
+
+  if (query) {
+    where.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { description: { contains: query, mode: "insensitive" } },
+    ];
+  }
+
+  if (slug) {
+    where.category = {
+      slug: slug,
+    };
+  }
+
+  let orderBy: Record<string, "asc" | "desc"> | undefined = undefined;
+
+  if (sort === "price-asc") {
+    orderBy = { price: "asc" };
+  } else if (sort === "price-desc") {
+    orderBy = { price: "desc" };
+  }
+
+  const skip = pageSize ? (page - 1) * pageSize : undefined;
+  const take = pageSize;
+
+  return await prisma.product.findMany({
+    where,
+    orderBy,
+    skip,
+    take,
+  });
+}
 
 export async function getProductBySlug(slug: string) {
   cacheLife("hours"); // 1時間キャッシュ
@@ -17,22 +68,6 @@ export async function getProductBySlug(slug: string) {
   if (!product) return null;
 
   return product;
-}
-
-export async function getProducts(page: number, pageSize: number) {
-  cacheLife("minutes"); // 数分キャッシュ（商品一覧は頻繁に更新される可能性）
-
-  const skip = (page - 1) * pageSize;
-
-  const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      skip,
-      take: pageSize,
-    }),
-    prisma.product.count(),
-  ]);
-
-  return { products, total };
 }
 
 export async function searchProducts(
