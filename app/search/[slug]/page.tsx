@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ProductsSkeleton } from "@/app/ProductsSkeleton";
@@ -87,13 +86,6 @@ export default async function CategoryPage({
   return (
     <>
       <Breadcrumbs items={breadcrumbs} />
-
-      <div className="mb-8 flex gap-3 text-sm">
-        <Link href={`/search/${slug}`}>Latest</Link>
-        <Link href={`/search/${slug}?sort=price-asc`}>Price: Low to High</Link>
-        <Link href={`/search/${slug}?sort=price-desc`}>Price: High to Low</Link>
-      </div>
-
       <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
         <Products slug={slug} sort={sort} />
       </Suspense>

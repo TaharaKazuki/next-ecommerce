@@ -1,6 +1,7 @@
 import { ReactNode, Suspense } from "react";
 
 import { CategorySidebar } from "@/components/category-sidebar";
+import { SortingControls } from "@/components/sorting-controls";
 import { getCategories } from "@/lib/actions";
 
 async function CategorySidebarServerWrapper() {
@@ -18,7 +19,9 @@ export default function SearchLayout({ children }: { children: ReactNode }) {
           </Suspense>
         </div>
         <div className="flex-1">{children}</div>
-        <div className="w-[125px] flex-none">Sorting</div>
+        <div className="w-[125px] flex-none">
+          <SortingControls />
+        </div>
       </div>
     </main>
   );
