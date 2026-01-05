@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 
 import { ProductsSkeleton } from "@/app/ProductsSkeleton";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { CategorySidebar } from "@/components/category-sidebar";
 import { prisma } from "@/lib/prisma";
 import { sleep } from "@/lib/utils";
 
@@ -86,7 +85,7 @@ export default async function CategoryPage({
   ];
 
   return (
-    <main className="container mx-auto py-4">
+    <>
       <Breadcrumbs items={breadcrumbs} />
 
       <div className="mb-8 flex gap-3 text-sm">
@@ -95,17 +94,9 @@ export default async function CategoryPage({
         <Link href={`/search/${slug}?sort=price-desc`}>Price: High to Low</Link>
       </div>
 
-      <div className="flex gap-8">
-        <Suspense fallback={<div className="w-[125px]">Loading...</div>}>
-          <CategorySidebar />
-        </Suspense>
-
-        <div className="flex-1">
-          <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
-            <Products slug={slug} sort={sort} />
-          </Suspense>
-        </div>
-      </div>
-    </main>
+      <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
+        <Products slug={slug} sort={sort} />
+      </Suspense>
+    </>
   );
 }
