@@ -50,3 +50,19 @@ export async function searchProducts(query: string) {
 
   return products;
 }
+
+export async function getCategories() {
+  cacheLife("hours"); // カテゴリは頻繁に変更されないため長めにキャッシュ
+
+  const categories = await prisma.category.findMany({
+    select: {
+      name: true,
+      slug: true,
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  return categories;
+}
