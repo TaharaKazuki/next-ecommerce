@@ -35,7 +35,10 @@ export async function getProducts(page: number, pageSize: number) {
   return { products, total };
 }
 
-export async function searchProducts(query: string) {
+export async function searchProducts(
+  query: string,
+  orderBy: Record<string, "asc" | "desc"> | undefined = undefined
+) {
   cacheLife("minutes"); // 検索結果を数分キャッシュ
 
   const products = await prisma.product.findMany({
@@ -45,6 +48,7 @@ export async function searchProducts(query: string) {
         { description: { contains: query, mode: "insensitive" } },
       ],
     },
+    ...(orderBy ? { orderBy } : {}),
     take: 18,
   });
 
