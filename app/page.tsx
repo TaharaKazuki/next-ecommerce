@@ -60,7 +60,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
             <PaginationItem key={index}>
               <PaginationLink
                 href={`?page=${index + 1}`}
-                className={page === index + 1 ? "active" : ""}
+                isActive={page === index + 1}
               >
                 {index + 1}
               </PaginationLink>

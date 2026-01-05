@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProductCardSkeleton() {
   return (
-    <Card className="overflow-hidden pt-0">
+    <Card className="min-h-[400px] overflow-hidden pt-0">
       <div className="relative aspect-video">
         <Skeleton className="h-full w-full" />
       </div>

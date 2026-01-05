@@ -14,7 +14,7 @@ import { formatPrice } from "@/lib/utils";
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug}`}>
-      <Card className="overflow-hidden pt-0">
+      <Card className="min-h-[400px] overflow-hidden pt-0">
         <div className="relative aspect-video">
           {product.image && (
             <Image

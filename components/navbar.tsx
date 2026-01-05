@@ -10,9 +10,9 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 export const categories = [
-  { id: 1, name: "Electronics", href: "/category/electronics" },
-  { id: 2, name: "Fashion", href: "/category/fashion" },
-  { id: 3, name: "Home", href: "/category/home" },
+  { id: 1, name: "Electronics", href: "/search/electronics" },
+  { id: 2, name: "Clothing", href: "/search/clothing" },
+  { id: 3, name: "Home", href: "/search/home" },
 ];
 
 export function Navbar() {
@@ -39,7 +39,7 @@ export function Navbar() {
           </div>
         </div>
 
-        <div className="mx-4 hidden w-full md:mx-8 md:block">
+        <div className="mx-4 w-full md:mx-8 md:block">
           <Suspense
             fallback={
               <Input
