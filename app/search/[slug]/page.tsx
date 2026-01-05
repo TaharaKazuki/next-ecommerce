@@ -3,11 +3,13 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ProductCard } from "@/app/ProductCard";
 import { ProductsSkeleton } from "@/app/ProductsSkeleton";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { CategorySidebar } from "@/components/category-sidebar";
 import { prisma } from "@/lib/prisma";
 import { sleep } from "@/lib/utils";
+
+import { ProductCard } from "../../ProductCard";
 
 type CategoryPageProps = {
   params: Promise<{ slug: string }>;
@@ -30,7 +32,7 @@ async function Products({ slug, sort }: { slug: string; sort?: string }) {
       },
     },
     ...(orderBy ? { orderBy } : {}),
-    take: 10,
+    take: 18,
   });
 
   await sleep(1000);
@@ -60,6 +62,7 @@ export default async function CategoryPage({
 }: CategoryPageProps) {
   const { slug } = await params;
   const { sort } = await searchParams;
+
   const category = await prisma.category.findUnique({
     where: {
       slug,
@@ -92,9 +95,17 @@ export default async function CategoryPage({
         <Link href={`/search/${slug}?sort=price-desc`}>Price: High to Low</Link>
       </div>
 
-      <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
-        <Products slug={slug} sort={sort} />
-      </Suspense>
+      <div className="flex gap-8">
+        <Suspense fallback={<div className="w-[125px]">Loading...</div>}>
+          <CategorySidebar />
+        </Suspense>
+
+        <div className="flex-1">
+          <Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
+            <Products slug={slug} sort={sort} />
+          </Suspense>
+        </div>
+      </div>
     </main>
   );
 }
