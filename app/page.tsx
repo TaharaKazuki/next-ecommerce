@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ProductListServerWrapper } from "@/components/ProductListServerWrapper";
 import {
   Pagination,
   PaginationContent,
@@ -9,45 +10,27 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { getProducts } from "@/lib/actions";
-import { sleep } from "@/lib/utils";
+import { prisma } from "@/lib/prisma";
 
-import { ProductCard } from "./ProductCard";
-import { ProductsSkeleton } from "./ProductsSkeleton";
+import ProductsSkeleton from "./ProductsSkeleton";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 const pageSize = 3;
 
-async function Products({ page }: { page: number }) {
-  const { products } = await getProducts(page, pageSize);
-
-  await sleep(1000);
-
-  return (
-    <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-    </>
-  );
-}
-
 export default async function HomePage(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
 
-  const { total } = await getProducts(page, pageSize);
+  const total = await prisma.product.count();
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <main className="container mx-auto p-4">
+    <main className="container mx-auto py-4">
       <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
 
       <Suspense key={page} fallback={<ProductsSkeleton />}>
-        <Products page={page} />
+        <ProductListServerWrapper params={{ page, pageSize }} />
       </Suspense>
 
       <Pagination className="mt-8">
