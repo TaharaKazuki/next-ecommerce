@@ -70,26 +70,6 @@ export async function getProductBySlug(slug: string) {
   return product;
 }
 
-export async function searchProducts(
-  query: string,
-  orderBy: Record<string, "asc" | "desc"> | undefined = undefined
-) {
-  cacheLife("minutes"); // 検索結果を数分キャッシュ
-
-  const products = await prisma.product.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: "insensitive" } },
-        { description: { contains: query, mode: "insensitive" } },
-      ],
-    },
-    ...(orderBy ? { orderBy } : {}),
-    take: 18,
-  });
-
-  return products;
-}
-
 export async function getCategories() {
   cacheLife("hours"); // カテゴリは頻繁に変更されないため長めにキャッシュ
 
