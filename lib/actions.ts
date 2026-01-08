@@ -2,6 +2,7 @@
 
 import { Prisma } from "@prisma/client";
 import { cacheLife } from "next/cache";
+import { cookies } from "next/headers";
 
 import { prisma } from "./prisma";
 
@@ -94,3 +95,33 @@ export type ShoppingCart = CartWithProducts & {
   size: number;
   subtotal: number;
 };
+
+export async function getCart(): Promise<ShoppingCart | null> {
+  const cartId = (await cookies()).get("cartId")?.value;
+
+  const cart = cartId
+    ? await prisma.cart.findUnique({
+        where: {
+          id: cartId,
+        },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      })
+    : null;
+
+  if (!cart) return null;
+
+  return {
+    ...cart,
+    size: cart.items.length,
+    subtotal: cart.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    ),
+  };
+}
