@@ -96,23 +96,28 @@ export type ShoppingCart = CartWithProducts & {
   subtotal: number;
 };
 
-export async function getCart(): Promise<ShoppingCart | null> {
+async function findCartFromCookie(): Promise<CartWithProducts | null> {
   const cartId = (await cookies()).get("cartId")?.value;
 
-  const cart = cartId
-    ? await prisma.cart.findUnique({
-        where: {
-          id: cartId,
-        },
+  if (!cartId) return null;
+
+  const cart = await prisma.cart.findUnique({
+    where: {
+      id: cartId,
+    },
+    include: {
+      items: {
         include: {
-          items: {
-            include: {
-              product: true,
-            },
-          },
+          product: true,
         },
-      })
-    : null;
+      },
+    },
+  });
+  return cart;
+}
+
+export async function getCart(): Promise<ShoppingCart | null> {
+  const cart = await findCartFromCookie();
 
   if (!cart) return null;
 
@@ -124,4 +129,46 @@ export async function getCart(): Promise<ShoppingCart | null> {
       0
     ),
   };
+}
+
+async function getOrCreateCart(): Promise<CartWithProducts> {
+  let cart = await findCartFromCookie();
+  if (cart) return cart;
+
+  cart = await prisma.cart.create({
+    data: {},
+    include: { items: { include: { product: true } } },
+  });
+
+  (await cookies()).set("cartId", cart.id, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
+  return cart;
+}
+
+export async function addCart(productId: string, quantity: number = 1) {
+  if (quantity < 1) {
+    throw new Error("Quantity must be at least 1");
+  }
+
+  const cart = await getOrCreateCart();
+  const existingItem = cart.items.find((item) => item.productId === productId);
+
+  if (existingItem) {
+    await prisma.cartItem.update({
+      where: { id: existingItem.id },
+      data: { quantity: existingItem.quantity + quantity },
+    });
+  } else {
+    await prisma.cartItem.create({
+      data: {
+        cartId: cart.id,
+        productId,
+        quantity,
+      },
+    });
+  }
 }
