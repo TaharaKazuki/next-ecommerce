@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 
-import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
+import { CartIndicator } from "./cart-indicator";
 import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
 import { SearchInput } from "./search-input";
-import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 export const categories = [
@@ -55,12 +54,13 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-0">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
-            </Link>
-          </Button>
-
+          <Suspense
+            fallback={
+              <div className="bg-muted size-10 animate-pulse rounded-md" />
+            }
+          >
+            <CartIndicator />
+          </Suspense>
           <ModeToggle />
         </div>
       </div>

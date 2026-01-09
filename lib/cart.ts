@@ -1,6 +1,9 @@
 "use server";
 
+import { cache } from "react";
+
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 import { prisma } from "./prisma";
@@ -14,15 +17,10 @@ export type ShoppingCart = CartWithProducts & {
   subtotal: number;
 };
 
-async function findCartFromCookie(): Promise<CartWithProducts | null> {
-  const cartId = (await cookies()).get("cartId")?.value;
-
-  if (!cartId) return null;
-
-  const cart = await prisma.cart.findUnique({
-    where: {
-      id: cartId,
-    },
+// React cacheを使用（リクエストスコープのキャッシュ）
+const getCartById = cache(async (cartId: string) => {
+  return await prisma.cart.findUnique({
+    where: { id: cartId },
     include: {
       items: {
         include: {
@@ -31,7 +29,14 @@ async function findCartFromCookie(): Promise<CartWithProducts | null> {
       },
     },
   });
-  return cart;
+});
+
+async function findCartFromCookie(): Promise<CartWithProducts | null> {
+  const cartId = (await cookies()).get("cartId")?.value;
+
+  if (!cartId) return null;
+
+  return await getCartById(cartId);
 }
 
 export async function getCart(): Promise<ShoppingCart | null> {
@@ -89,4 +94,7 @@ export async function addCart(productId: string, quantity: number = 1) {
       },
     });
   }
+
+  // カートのキャッシュを再検証（無効化）
+  revalidatePath("/", "layout");
 }
