@@ -1,3 +1,4 @@
+import CartEntry from "@/components/cart-entry";
 import { getCart } from "@/lib/cart";
 
 export default async function CartPage() {
@@ -15,20 +16,7 @@ export default async function CartPage() {
       ) : (
         <div className="flex flex-col gap-4">
           {cart.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between border-b p-4"
-            >
-              <div>
-                <h2 className="text-xl">{item.product.name}</h2>
-                <p className="text-muted-foreground">
-                  {item.product.description}
-                </p>
-              </div>
-              <div>
-                <span className="text-lg font-bold">${item.product.price}</span>
-              </div>
-            </div>
+            <CartEntry key={item.id} cartItem={item} />
           ))}
         </div>
       )}
