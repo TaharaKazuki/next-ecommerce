@@ -14,7 +14,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
   return (
     <li className="border-muted flex justify-between border-b py-4">
       <div className="flex space-x-4">
-        <div className="border-muted h-24 w-24 overflow-hidden rounded-md border">
+        <div className="border-muted size-24 overflow-hidden rounded-md border">
           <Image
             className="h-full w-full object-cover"
             width={128}
