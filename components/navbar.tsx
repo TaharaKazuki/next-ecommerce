@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 
 import { CartIndicator } from "./cart-indicator";
+import { CartIndicatorSkeleton } from "./cart-indicator-skeleton";
 import { MobileNav } from "./mobile-nav";
 import { ModeToggle } from "./mode-toggle";
 import { SearchInput } from "./search-input";
@@ -54,11 +55,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-0">
-          <Suspense
-            fallback={
-              <div className="bg-muted size-10 animate-pulse rounded-md" />
-            }
-          >
+          <Suspense fallback={<CartIndicatorSkeleton />}>
             <CartIndicator />
           </Suspense>
           <ModeToggle />
