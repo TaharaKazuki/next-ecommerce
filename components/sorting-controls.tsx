@@ -1,4 +1,6 @@
 "use client";
+import { useCallback, useMemo } from "react";
+
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -9,18 +11,31 @@ export function SortingControls() {
   const searchParams = useSearchParams();
   const currentSort = searchParams.get("sort");
 
-  const createSortUrl = (sortValue: string | null): string => {
-    const params = new URLSearchParams(searchParams.toString());
+  const createSortUrl = useCallback(
+    (sortValue: string | null): string => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (sortValue) {
-      params.set("sort", sortValue);
-    } else {
-      params.delete("sort");
-    }
+      if (sortValue) {
+        params.set("sort", sortValue);
+      } else {
+        params.delete("sort");
+      }
 
-    const queryString = params.toString();
-    return `${pathname}${queryString ? `?${queryString}` : ""}`;
-  };
+      const queryString = params.toString();
+      return `${pathname}${queryString ? `?${queryString}` : ""}`;
+    },
+    [pathname, searchParams]
+  );
+
+  // Pre-compute all URLs to avoid recalculation on every render
+  const urls = useMemo(
+    () => ({
+      latest: createSortUrl(null),
+      priceAsc: createSortUrl("price-asc"),
+      priceDesc: createSortUrl("price-desc"),
+    }),
+    [createSortUrl]
+  );
   return (
     <>
       <h3 className="text-muted-foreground mb-2 text-xs">Sort By</h3>
@@ -28,7 +43,7 @@ export function SortingControls() {
       <ul>
         <li>
           <Link
-            href={createSortUrl(null)}
+            href={urls.latest}
             className={cn(
               "hover:text-primary text-sm",
               !currentSort ? "underline" : ""
@@ -39,7 +54,7 @@ export function SortingControls() {
         </li>
         <li>
           <Link
-            href={createSortUrl("price-asc")}
+            href={urls.priceAsc}
             className={cn(
               "hover:text-primary text-sm",
               currentSort === "price-asc" ? "underline" : ""
@@ -50,7 +65,7 @@ export function SortingControls() {
         </li>
         <li>
           <Link
-            href={createSortUrl("price-desc")}
+            href={urls.priceDesc}
             className={cn(
               "hover:text-primary text-sm",
               currentSort === "price-desc" ? "underline" : ""

@@ -55,6 +55,11 @@ export async function getProducts({
   });
 }
 
+export async function getProductCount() {
+  cacheLife("minutes");
+  return await prisma.product.count();
+}
+
 export async function getProductBySlug(slug: string) {
   cacheLife("hours"); // 1時間キャッシュ
 

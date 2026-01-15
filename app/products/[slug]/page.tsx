@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -7,13 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProductBySlug } from "@/lib/actions";
-import { formatPrice, sleep } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 type Params = Promise<{ slug: string }>;
 
+// Wrap with cache() to deduplicate within a single request
+const getCachedProductBySlug = cache(getProductBySlug);
+
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await getCachedProductBySlug(slug);
 
   if (!product) {
     return {};
@@ -35,7 +40,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function ProductPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await getCachedProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -49,8 +54,6 @@ export default async function ProductPage({ params }: { params: Params }) {
     },
     { label: product.name, href: `/product/${product.slug}`, active: true },
   ];
-
-  await sleep(1000);
 
   return (
     <main className="container mx-auto p-4">

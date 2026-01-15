@@ -1,7 +1,5 @@
-import { Suspense } from "react";
-
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { ProductListServerWrapper } from "@/components/ProductListServerWrapper";
+import { ProductList } from "@/components/product-lits";
 import {
   Pagination,
   PaginationContent,
@@ -10,9 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { prisma } from "@/lib/prisma";
-
-import ProductsSkeleton from "./ProductsSkeleton";
+import { getProductCount, getProducts } from "@/lib/actions";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -22,16 +18,19 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = Number(searchParams.page) || 1;
 
-  const total = await prisma.product.count();
+  // Parallel fetching - both queries run simultaneously
+  const [total, products] = await Promise.all([
+    getProductCount(),
+    getProducts({ page, pageSize }),
+  ]);
+
   const totalPages = Math.ceil(total / pageSize);
 
   return (
     <main className="container mx-auto py-4">
       <Breadcrumbs items={[{ label: "Products", href: "/" }]} />
 
-      <Suspense key={page} fallback={<ProductsSkeleton />}>
-        <ProductListServerWrapper params={{ page, pageSize }} />
-      </Suspense>
+      <ProductList products={products} />
 
       <Pagination className="mt-8">
         <PaginationContent>
