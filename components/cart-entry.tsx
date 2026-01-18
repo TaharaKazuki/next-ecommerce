@@ -1,7 +1,11 @@
+"use client";
+
+import { useTransition } from "react";
+
 import { Minus, Plus } from "lucide-react";
 import Image from "next/image";
 
-import { type CartItemWithProduct } from "@/lib/cart";
+import { setProductQuantity, type CartItemWithProduct } from "@/lib/cart";
 import { formatPrice } from "@/lib/utils";
 
 import { Button } from "./ui/button";
@@ -11,6 +15,28 @@ interface CartEntryProps {
 }
 
 export default function CartEntry({ cartItem }: CartEntryProps) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleIncrement = () => {
+    startTransition(async () => {
+      try {
+        await setProductQuantity(cartItem.product.id, cartItem.quantity + 1);
+      } catch (error) {
+        console.error(`Error incrementing cart item:`, error);
+      }
+    });
+  };
+
+  const handleDecrement = () => {
+    startTransition(async () => {
+      try {
+        await setProductQuantity(cartItem.product.id, cartItem.quantity - 1);
+      } catch (error) {
+        console.error("Error decrementing cart item:", error);
+      }
+    });
+  };
+
   return (
     <li className="border-muted flex justify-between border-b py-4">
       <div className="flex space-x-4">
@@ -32,11 +58,21 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
         <p className="font-medium">{formatPrice(cartItem.product.price)}</p>
 
         <div className="border-muted flex items-center rounded-full border">
-          <Button variant="ghost" className="rounded-l-full">
+          <Button
+            variant="ghost"
+            className="rounded-l-full"
+            onClick={handleDecrement}
+            disabled={isPending}
+          >
             <Minus className="h-4 w-4" />
           </Button>
           <p className="w-6 text-center">{cartItem.quantity}</p>
-          <Button variant="ghost" className="rounded-l-full">
+          <Button
+            variant="ghost"
+            className="rounded-l-full"
+            onClick={handleIncrement}
+            disabled={isPending}
+          >
             <Plus className="h-4 w-4" />
           </Button>
         </div>
