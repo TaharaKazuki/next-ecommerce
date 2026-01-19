@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
 
 import { setProductQuantity, type CartItemWithProduct } from "@/lib/cart";
@@ -17,20 +17,10 @@ interface CartEntryProps {
 export default function CartEntry({ cartItem }: CartEntryProps) {
   const [isPending, startTransition] = useTransition();
 
-  const handleIncrement = () => {
+  const handleSetProductQuantity = (quantity: number) => {
     startTransition(async () => {
       try {
-        await setProductQuantity(cartItem.product.id, cartItem.quantity + 1);
-      } catch (error) {
-        console.error(`Error incrementing cart item:`, error);
-      }
-    });
-  };
-
-  const handleDecrement = () => {
-    startTransition(async () => {
-      try {
-        await setProductQuantity(cartItem.product.id, cartItem.quantity - 1);
+        await setProductQuantity(cartItem.product.id, quantity);
       } catch (error) {
         console.error("Error decrementing cart item:", error);
       }
@@ -40,6 +30,18 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
   return (
     <li className="border-muted flex justify-between border-b py-4">
       <div className="flex space-x-4">
+        <div className="absolute z-10 -mt-2 -ml-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={isPending}
+            className="bg-muted text-muted-foreground h-7 w-7 rounded-full"
+            onClick={() => handleSetProductQuantity(0)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+
         <div className="border-muted size-16 overflow-hidden rounded-md border">
           <Image
             className="h-full w-full object-cover"
@@ -61,7 +63,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
           <Button
             variant="ghost"
             className="rounded-l-full"
-            onClick={handleDecrement}
+            onClick={() => handleSetProductQuantity(cartItem.quantity - 1)}
             disabled={isPending}
           >
             <Minus className="h-4 w-4" />
@@ -70,7 +72,7 @@ export default function CartEntry({ cartItem }: CartEntryProps) {
           <Button
             variant="ghost"
             className="rounded-l-full"
-            onClick={handleIncrement}
+            onClick={() => handleSetProductQuantity(cartItem.quantity + 1)}
             disabled={isPending}
           >
             <Plus className="h-4 w-4" />
