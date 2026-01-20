@@ -26,6 +26,9 @@ const getCartById = async (id: string) => {
         include: {
           product: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       },
     },
   });
