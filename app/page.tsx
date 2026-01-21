@@ -9,6 +9,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { getProductCount, getProducts } from "@/lib/actions";
+import { stripe } from "@/lib/stripe";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -25,6 +26,8 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
   ]);
 
   const totalPages = Math.ceil(total / pageSize);
+
+  console.info(await stripe.events.list({ limit: 1 }));
 
   return (
     <main className="container mx-auto py-4">
